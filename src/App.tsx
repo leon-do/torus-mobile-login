@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import Torus from "@toruslabs/torus-embed";
+import Web3 from "web3";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  useEffect(() => {
+    initTorus();
+  }, []);
+
+  const initTorus = async () => {
+    const torus: Torus = new Torus({});
+    try {
+      await torus.init({});
+      await torus.login({});
+      const web3: Web3 = new Web3(torus.provider);
+      const signedMessage: string = await signMessage(web3);
+      console.log(signedMessage);
+    } catch (err) {
+      await torus.cleanUp();
+      window.location.reload();
+    }
+  };
+
+  const signMessage = async (web3: Web3): Promise<string> => {
+    const from: string = (await web3.eth.getAccounts())[0];
+    const expiration: number = Math.round(Date.now() / 1000 + 30)
+    const message: string = `${from}-${expiration}`;
+    const signature: string = await web3.eth.personal.sign(message, from, "");
+    return `${signature}-${message}`;
+  };
+
+  return <div className="App"></div>;
 }
 
 export default App;
