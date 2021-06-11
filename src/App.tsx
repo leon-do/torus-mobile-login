@@ -10,11 +10,16 @@ function App() {
   const initTorus = async () => {
     const torus: Torus = new Torus({});
     try {
+      // login
       await torus.init({});
       await torus.login({});
       const web3: Web3 = new Web3(torus.provider);
+      // sign
       const signedMessage: string = await signMessage(web3);
       console.log(signedMessage);
+      // deep link back to unity
+      const deepLink = window.location.href.split("?")[1] || "web3Login"
+      window.location.href = `unitydl://${deepLink}?${signedMessage}`;
     } catch (err) {
       console.error(err);
       await torus.cleanUp();
