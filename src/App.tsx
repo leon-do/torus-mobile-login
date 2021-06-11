@@ -18,8 +18,8 @@ function App() {
       const signedMessage: string = await signMessage(web3);
       console.log(signedMessage);
       // deep link back to unity
-      const deepLink = window.location.href.split("?")[1] || "web3Login"
       alert(signedMessage);
+      const deepLink = window.location.href.split("?")[1] || "web3Login"
       window.location.href = `unitydl://${deepLink}?${signedMessage}`;
     } catch (err) {
       console.error(err);
