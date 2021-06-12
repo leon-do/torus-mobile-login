@@ -18,9 +18,8 @@ function App() {
       const signedMessage: string = await signMessage(web3);
       console.log(signedMessage);
       // deep link back to unity
-      alert(signedMessage);
-      const deepLink = window.location.href.split("?")[1] || "web3Login"
-      window.location.href = `unitydl://${deepLink}?${signedMessage}`;
+      const deepLinkHost = window.location.href.split("?")[1] || "web3Login";
+      const deepLinkHref = `unitydl://${deepLinkHost}?${signedMessage}`;
     } catch (err) {
       console.error(err);
       await torus.cleanUp();
@@ -36,7 +35,13 @@ function App() {
     return `${signature}-${message}`;
   };
 
-  return <div className="App"></div>;
+  return (
+    <div className="App">
+      <p>
+        <a href="unitydl://web3Login?012345">Launch</a>
+      </p>
+    </div>
+  );
 }
 
 export default App;
