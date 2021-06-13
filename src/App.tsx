@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import "./App.css";
+import { useState, useEffect } from "react";
 import Torus from "@toruslabs/torus-embed";
 import Web3 from "web3";
 
 function App() {
+  const [deepLinkHref, setDeepLinkHref] = useState("");
+
   useEffect(() => {
     initTorus();
-  });
+  }, []);
 
   const initTorus = async () => {
     const torus: Torus = new Torus({});
@@ -16,10 +19,10 @@ function App() {
       const web3: Web3 = new Web3(torus.provider);
       // sign
       const signedMessage: string = await signMessage(web3);
-      console.log(signedMessage);
-      // deep link back to unity
-      const deepLinkHost = window.location.href.split("?")[1] || "web3Login";
-      const deepLinkHref = `unitydl://${deepLinkHost}?${signedMessage}`;
+      // update deep link
+      const deepLinkHost: string =
+        window.location.href.split("?")[1] || "web3Login";
+      setDeepLinkHref(`unitydl://${deepLinkHost}?${signedMessage}`);
     } catch (err) {
       console.error(err);
       await torus.cleanUp();
@@ -37,9 +40,13 @@ function App() {
 
   return (
     <div className="App">
-      <p>
-        <a href="unitydl://web3Login?012345">Launch</a>
-      </p>
+      {deepLinkHref === "" ? (
+        <div></div>
+      ) : (
+        <a href={deepLinkHref}>
+          <button className="App-button"> Continue to App </button>
+        </a>
+      )}
     </div>
   );
 }
