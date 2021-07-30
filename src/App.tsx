@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     initOpenLogin();
-  });
+  }, []);
 
   const initOpenLogin = async () => {
     // only popup for mobile
