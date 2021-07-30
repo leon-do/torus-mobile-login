@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import OpenLogin from "@toruslabs/openlogin";
 import { ethers } from "ethers";
 
+const openlogin = new OpenLogin({
+  clientId:
+    "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
+  network: "mainnet",
+});
+
 function App() {
   const [deepLinkHref, setDeepLinkHref] = useState("");
-
-  const openlogin = new OpenLogin({
-    clientId: "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
-    network: "mainnet",
-    uxMode: "popup"
-  });
 
   useEffect(() => {
     initOpenLogin();
@@ -41,14 +41,21 @@ function App() {
     );
   };
 
+  const onLogOut = async () => {
+    await openlogin.logout();
+  }
+
   return (
     <div className="App">
       {deepLinkHref === "" ? (
         <div>Please Wait...</div>
       ) : (
-        <a href={deepLinkHref}>
-          <button className="App-button"> Continue </button>
-        </a>
+        <>
+          <a className="Link" href={deepLinkHref}>
+            <button className="Login Button"> Continue </button>
+          </a>
+          <button onClick={onLogOut} className="Logout Button"> Logout </button>
+        </>
       )}
     </div>
   );
