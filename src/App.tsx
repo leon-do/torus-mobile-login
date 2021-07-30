@@ -17,7 +17,7 @@ function App() {
 
   const initOpenLogin = async () => {
     // only popup for mobile
-    if (navigator.maxTouchPoints === 0) return;
+    // if (navigator.maxTouchPoints === 0) return;
     await openlogin.init();
     if (!openlogin.privKey) {
       await openlogin.login();
