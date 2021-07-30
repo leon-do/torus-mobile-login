@@ -7,7 +7,7 @@ function App() {
   const [deepLinkHref, setDeepLinkHref] = useState("");
 
   const openlogin = new OpenLogin({
-    clientId: "YOUR_PROJECT_ID",
+    clientId: "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
     network: "mainnet",
   });
 
@@ -17,7 +17,7 @@ function App() {
 
   const initOpenLogin = async () => {
     // only popup for mobile
-    // if (navigator.maxTouchPoints === 0) return;
+    if (navigator.maxTouchPoints === 0) return;
     await openlogin.init();
     if (!openlogin.privKey) {
       await openlogin.login();
@@ -27,6 +27,7 @@ function App() {
       openlogin.privKey,
       ethers.getDefaultProvider()
     );
+
     const address = await wallet.getAddress();
     // set href
     const deepLinkHost: string = window.location.href.split("?")[1];
