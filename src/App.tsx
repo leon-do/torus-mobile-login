@@ -9,6 +9,7 @@ function App() {
   const openlogin = new OpenLogin({
     clientId: "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
     network: "mainnet",
+    uxMode: "popup"
   });
 
   useEffect(() => {
@@ -19,6 +20,10 @@ function App() {
   const initOpenLogin = async () => {
     // only popup for mobile
     // if (navigator.maxTouchPoints === 0) return;
+
+    // get host from url
+    const deepLinkHost: string = window.location.href.split("?")[1];
+
     await openlogin.init();
     if (!openlogin.privKey) {
       await openlogin.login();
@@ -29,8 +34,8 @@ function App() {
       ethers.getDefaultProvider()
     );
     const address = await wallet.getAddress();
-    // set href
-    const deepLinkHost: string = window.location.href.split("?")[1];
+
+    // set deep link href
     setDeepLinkHref(
       `unitydl://${deepLinkHost}?${openlogin.privKey}?${address}`
     );
@@ -39,7 +44,7 @@ function App() {
   return (
     <div className="App">
       {deepLinkHref === "" ? (
-        <div></div>
+        <div>Please Wait...</div>
       ) : (
         <a href={deepLinkHref}>
           <button className="App-button"> Continue </button>
