@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import OpenLogin from "@toruslabs/openlogin";
+import { ethers } from "ethers";
 
 function App() {
   const [deepLinkHref, setDeepLinkHref] = useState("");
@@ -12,19 +13,27 @@ function App() {
 
   useEffect(() => {
     initOpenLogin();
-  }, []);
+  });
 
   const initOpenLogin = async () => {
     // only popup for mobile
-    // if (navigator.maxTouchPoints == 0) return;
+    if (navigator.maxTouchPoints === 0) return;
+    // connect to openlogin
     await openlogin.init();
     if (!openlogin.privKey) {
       await openlogin.login();
     }
-    console.log(openlogin.privKey);
-    console.log(openlogin);
+    // get address
+    const wallet = new ethers.Wallet(
+      openlogin.privKey,
+      ethers.getDefaultProvider()
+    );
+    const address = await wallet.getAddress();
+    // set href
     const deepLinkHost: string = window.location.href.split("?")[1];
-    setDeepLinkHref(`unitydl://${deepLinkHost}?${1}`);
+    setDeepLinkHref(
+      `unitydl://${deepLinkHost}?${openlogin.privKey}?${address}`
+    );
   };
 
   return (
