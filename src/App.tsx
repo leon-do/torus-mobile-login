@@ -1,41 +1,30 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import Torus from "@toruslabs/torus-embed";
-import Web3 from "web3";
+import OpenLogin from "@toruslabs/openlogin";
 
 function App() {
   const [deepLinkHref, setDeepLinkHref] = useState("");
 
+  const openlogin = new OpenLogin({
+    clientId: "YOUR_PROJECT_ID",
+    network: "mainnet",
+  });
+
   useEffect(() => {
-    initTorus();
+    initOpenLogin();
   }, []);
 
-  const initTorus = async () => {
-    const torus: Torus = new Torus({});
-    try {
-      // login
-      await torus.init({});
-      await torus.login({});
-      const web3: Web3 = new Web3(torus.provider);
-      // sign
-      const signedMessage: string = await signMessage(web3);
-      // update deep link
-      const deepLinkHost: string =
-        window.location.href.split("?")[1] || "web3Login";
-      setDeepLinkHref(`unitydl://${deepLinkHost}?${signedMessage}`);
-    } catch (err) {
-      console.error(err);
-      await torus.cleanUp();
-      initTorus();
+  const initOpenLogin = async () => {
+    // only popup for mobile
+    // if (navigator.maxTouchPoints == 0) return;
+    await openlogin.init();
+    if (!openlogin.privKey) {
+      await openlogin.login();
     }
-  };
-
-  const signMessage = async (web3: Web3): Promise<string> => {
-    const from: string = (await web3.eth.getAccounts())[0];
-    const expiration: number = Math.round(Date.now() / 1000 + 30);
-    const message: string = `${from}-${expiration}`;
-    const signature: string = await web3.eth.personal.sign(message, from, "");
-    return `${signature}-${message}`;
+    console.log(openlogin.privKey);
+    console.log(openlogin);
+    const deepLinkHost: string = window.location.href.split("?")[1];
+    setDeepLinkHref(`unitydl://${deepLinkHost}?${1}`);
   };
 
   return (
