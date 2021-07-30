@@ -7,6 +7,7 @@ const openlogin = new OpenLogin({
   clientId:
     "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
   network: "mainnet",
+  uxMode: "popup",
 });
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
 
   const initOpenLogin = async () => {
     // only popup for mobile
-    // if (navigator.maxTouchPoints === 0) return;
+    if (navigator.maxTouchPoints === 0) return;
 
     // get host from url
     const deepLinkHost: string = window.location.href.split("?")[1];
