@@ -9,7 +9,6 @@ function App() {
   const openlogin = new OpenLogin({
     clientId: "BFFZOyDfs-K02CgDFpGVzX6A30EcaMCMoUoXkXwoyEbPuL7OZerAKu_2CY8EDxxefaaZaLf8rg1S7COegAyB1eM",
     network: "mainnet",
-    redirectUrl: `${window.origin}`,
   });
 
   useEffect(() => {
