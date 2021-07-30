@@ -27,7 +27,6 @@ function App() {
       openlogin.privKey,
       ethers.getDefaultProvider()
     );
-
     const address = await wallet.getAddress();
     // set href
     const deepLinkHost: string = window.location.href.split("?")[1];
@@ -42,7 +41,7 @@ function App() {
         <div></div>
       ) : (
         <a href={deepLinkHref}>
-          <button className="App-button"> Continue to App </button>
+          <button className="App-button"> Continue </button>
         </a>
       )}
     </div>
