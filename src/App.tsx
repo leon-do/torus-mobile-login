@@ -29,22 +29,28 @@ function App() {
     if (!openlogin.privKey) {
       await openlogin.login();
     }
-    // get address
-    const wallet = new ethers.Wallet(
-      openlogin.privKey,
-      ethers.getDefaultProvider()
-    );
-    const address = await wallet.getAddress();
+
+    // sign message
+    const signedMessage = await signMessage(openlogin.privKey);
 
     // set deep link href
     setDeepLinkHref(
-      `unitydl://${deepLinkHost}?${openlogin.privKey}?${address}`
+      `unitydl://${deepLinkHost}?${openlogin.privKey}?${signedMessage}`
     );
   };
 
   const onLogOut = async () => {
     await openlogin.logout();
     window.location.reload();
+  };
+
+  const signMessage = async (privateKey: string): Promise<string> => {
+    const wallet = new ethers.Wallet(privateKey, ethers.getDefaultProvider());
+    const address = await wallet.getAddress();
+    const expiration: number = Math.round(Date.now() / 1000 + 30);
+    const message: string = `${address}-${expiration}`;
+    const signature = await wallet.signMessage(message);
+    return `${signature}-${message}`;
   };
 
   return (
