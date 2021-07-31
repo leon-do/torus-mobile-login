@@ -44,7 +44,8 @@ function App() {
 
   const onLogOut = async () => {
     await openlogin.logout();
-  }
+    window.location.reload();
+  };
 
   return (
     <div className="App">
