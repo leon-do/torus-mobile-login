@@ -1,7 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import OpenLogin from "@toruslabs/openlogin";
-import { ethers } from "ethers";
 
 const openlogin = new OpenLogin({
   clientId:
@@ -12,6 +11,7 @@ const openlogin = new OpenLogin({
 
 function App() {
   const [deepLinkHref, setDeepLinkHref] = useState("");
+  const [status, setStatus] = useState("Please Wait...");
 
   useEffect(() => {
     initOpenLogin();
@@ -20,22 +20,19 @@ function App() {
 
   const initOpenLogin = async () => {
     // only popup for mobile
-    if (navigator.maxTouchPoints === 0) return;
-
-    // get host from url
-    const deepLinkHost: string = window.location.href.split("?")[1];
+    if (navigator.maxTouchPoints === 0) {
+      setStatus("Connect with Mobile");
+      return;
+    }
 
     await openlogin.init();
     if (!openlogin.privKey) {
       await openlogin.login();
     }
 
-    // sign message
-    const signedMessage = await signMessage(openlogin.privKey);
-
     // set deep link href
     setDeepLinkHref(
-      `unitydl://${deepLinkHost}?${openlogin.privKey}?${signedMessage}`
+      `unitydl://unity?${openlogin.privKey}`
     );
   };
 
@@ -44,19 +41,10 @@ function App() {
     window.location.reload();
   };
 
-  const signMessage = async (privateKey: string): Promise<string> => {
-    const wallet = new ethers.Wallet(privateKey, ethers.getDefaultProvider());
-    const address = await wallet.getAddress();
-    const expiration: number = Math.round(Date.now() / 1000 + 30);
-    const message: string = `${address}-${expiration}`;
-    const signature = await wallet.signMessage(message);
-    return `${signature}-${message}`;
-  };
-
   return (
     <div className="App">
       {deepLinkHref === "" ? (
-        <div>Please Wait...</div>
+        <div>{status}</div>
       ) : (
         <>
           <a className="Link" href={deepLinkHref}>
