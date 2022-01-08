@@ -32,7 +32,7 @@ function App() {
 
     // set deep link href
     setDeepLinkHref(
-      `unitydl://unity?${openlogin.privKey}`
+      `unitydl://unity?0x${openlogin.privKey}`
     );
   };
 
